@@ -1,28 +1,12 @@
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Home from "./sections/Home";
-import About from "./sections/About";
-import { Box } from "@mui/material";
+import { Routes, Route, Navigate } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
 
 const App = () => {
   return (
-    <Box 
-      sx={{ 
-        paddingTop: "64px",  // Adjusting for fixed navbar
-        width: "100vw", 
-        minHeight: "100vh", 
-        overflowX: "hidden" 
-      }}
-    >
-      <Navbar />
-      
-      {/* Updated section IDs for smooth scrolling */}
-      <Box id="home-section"><Home /></Box>
-      <Box id="about-section"><About /></Box>
-      
-      
-      <Footer />
-    </Box>
+    <Routes>
+      <Route path="/" element={<Navigate to="/landingpage" />} /> {/* 👈 Redirect */}
+      <Route path="/landingpage" element={<LandingPage />} />
+    </Routes>
   );
 };
 

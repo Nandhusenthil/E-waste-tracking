@@ -18,9 +18,13 @@ const municipalitySchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    batch_id: {
+      type: Number,
+      unique: true,
+    },
   },
   {
-    timestamps: true, // ✅ Automatically adds createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 

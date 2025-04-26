@@ -21,10 +21,15 @@ const MunicipalityDashboard = () => {
   const fetchData = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/municipality');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
       const data = await response.json();
+      console.log("🌐 Fetched entries:", data); // Optional debug log
       setEntries(data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('❌ Error fetching data:', error);
     }
   };
 
@@ -36,12 +41,13 @@ const MunicipalityDashboard = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, location, waste }),
       });
-  
-      const newEntry = await response.json(); // Get newly added entry
-  
-      // Append the new entry instead of re-fetching everything
-      setEntries(prev => [...prev, newEntry]);
-  
+
+      const newEntry = await response.json();
+
+      // Append the new entry to the existing list
+      setEntries((prev) => [...prev, newEntry]);
+
+      // Clear form inputs
       setName('');
       setLocation('');
       setWaste('');
@@ -49,7 +55,6 @@ const MunicipalityDashboard = () => {
       console.error('Error submitting data:', error);
     }
   };
-  
 
   useEffect(() => {
     fetchData();
@@ -96,6 +101,7 @@ const MunicipalityDashboard = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell><strong>Batch ID</strong></TableCell>
               <TableCell><strong>Name</strong></TableCell>
               <TableCell><strong>Location</strong></TableCell>
               <TableCell><strong>Waste (kg)</strong></TableCell>
@@ -105,6 +111,7 @@ const MunicipalityDashboard = () => {
           <TableBody>
             {entries.map((entry, index) => (
               <TableRow key={index}>
+                <TableCell>{entry.batch_id ?? 'N/A'}</TableCell>
                 <TableCell>{entry.name}</TableCell>
                 <TableCell>{entry.location}</TableCell>
                 <TableCell>{entry.waste}</TableCell>

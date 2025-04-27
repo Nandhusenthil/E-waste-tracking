@@ -10,6 +10,7 @@ import {
   TableCell,
   TableBody,
   Paper,
+  Stack,
 } from '@mui/material';
 
 const MunicipalityDashboard = () => {
@@ -17,6 +18,7 @@ const MunicipalityDashboard = () => {
   const [location, setLocation] = useState('');
   const [waste, setWaste] = useState('');
   const [entries, setEntries] = useState([]);
+  const [batchCounter, setBatchCounter] = useState(1); // 🔥 Global counter for unique Batch IDs
 
   const fetchData = async () => {
     try {
@@ -24,10 +26,17 @@ const MunicipalityDashboard = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
       const data = await response.json();
-      console.log("🌐 Fetched entries:", data); // Optional debug log
+      console.log("🌐 Fetched entries:", data);
+
       setEntries(data);
+
+      // ⚡ Update counter based on maximum batch id fetched
+      const maxBatchId = data.reduce((max, entry) => {
+        const idNum = parseInt(entry.batch_id?.split('_')[1]) || 0;
+        return idNum > max ? idNum : max;
+      }, 0);
+      setBatchCounter(maxBatchId + 1);
     } catch (error) {
       console.error('❌ Error fetching data:', error);
     }
@@ -36,16 +45,18 @@ const MunicipalityDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const newBatchId = `batch_${batchCounter}`;
+
       const response = await fetch('http://localhost:5000/api/municipality', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, location, waste }),
+        body: JSON.stringify({ name, location, waste, batch_id: newBatchId }),
       });
 
       const newEntry = await response.json();
 
-      // Append the new entry to the existing list
       setEntries((prev) => [...prev, newEntry]);
+      setBatchCounter((prev) => prev + 1); // Increment counter after new entry
 
       // Clear form inputs
       setName('');
@@ -54,6 +65,21 @@ const MunicipalityDashboard = () => {
     } catch (error) {
       console.error('Error submitting data:', error);
     }
+  };
+
+  const handleManualProcess = () => {
+    const newBatchId = `batch_${batchCounter}`;
+
+    const newManualEntry = {
+      name: 'Manual Batch',
+      location: 'Manual Location',
+      waste: '0',
+      batch_id: newBatchId,
+      createdAt: new Date().toISOString(),
+    };
+
+    setEntries((prev) => [...prev, newManualEntry]);
+    setBatchCounter((prev) => prev + 1); // Increment counter after manual batch
   };
 
   useEffect(() => {
@@ -68,29 +94,38 @@ const MunicipalityDashboard = () => {
 
       <form
         onSubmit={handleSubmit}
-        style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}
+        style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}
       >
-        <TextField
-          label="Municipality Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          label="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          label="Waste Collected (kg)"
-          value={waste}
-          onChange={(e) => setWaste(e.target.value)}
-          fullWidth
-        />
-        <Button type="submit" variant="contained" color="primary">
-          Submit
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <TextField
+            label="Municipality Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="Waste Collected (kg)"
+            value={waste}
+            onChange={(e) => setWaste(e.target.value)}
+            fullWidth
+          />
+        </Stack>
+
+        <Stack direction="row" spacing={2}>
+          <Button type="submit" variant="contained" color="primary">
+            Submit Municipality Batch
+          </Button>
+
+          <Button variant="outlined" color="secondary" onClick={handleManualProcess}>
+            Manually Process Batch
+          </Button>
+        </Stack>
       </form>
 
       <Typography variant="h5" gutterBottom fontWeight="bold">

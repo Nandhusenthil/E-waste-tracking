@@ -36,9 +36,8 @@ const RecyclerDashboard = () => {
   });
   const [manualMode, setManualMode] = useState(false);
 
-  const COLORS = ['#4CAF50', '#FF5722']; // Green for recycled, Orange for non-recyclable
+  const COLORS = ['#4CAF50', '#FF5722'];
 
-  // Fetch Municipality batches
   const fetchNewBatches = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/recycler/new-batches');
@@ -49,7 +48,6 @@ const RecyclerDashboard = () => {
     }
   };
 
-  // Fetch Recycler processed entries
   const fetchRecyclerEntries = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/recycler');
@@ -65,18 +63,32 @@ const RecyclerDashboard = () => {
     fetchRecyclerEntries();
   }, []);
 
-  const handleOpenForm = (batch_id = '') => {
-    setFormData((prev) => ({
-      ...prev,
-      batch_id,
+  const handleManualProcess = () => {
+    setFormData({
+      batch_id: '',
       recycler_branch: '',
       recycler_location: '',
       received_weight: '',
       recycled_weight: '',
       non_recyclable_weight: '',
       reason_non_recyclable: '',
-    }));
-    setManualMode(batch_id === '');
+    });
+    setManualMode(true);
+    setOpenForm(true);
+  };
+
+  const handleBatchProcess = (batch_id) => {
+    const batch = newBatches.find((b) => b.batch_id === batch_id);
+    setFormData({
+      batch_id: batch.batch_id,
+      recycler_branch: '',
+      recycler_location: '',
+      received_weight: batch.waste || '',
+      recycled_weight: '',
+      non_recyclable_weight: '',
+      reason_non_recyclable: '',
+    });
+    setManualMode(false);
     setOpenForm(true);
   };
 
@@ -92,19 +104,31 @@ const RecyclerDashboard = () => {
   };
 
   const handleFormSubmit = async () => {
+   
+  
+    if (manualMode) {
+      const batchIdExists = entries.some(entry => entry.batch_id === formData.batch_id);
+      const batchExistsInMunicipality = newBatches.some(batch => batch.batch_id === formData.batch_id);
+  
+      if (!batchIdExists || !batchExistsInMunicipality) {
+        alert('Enter a unique Batch Id any Try Again');
+        return; // Stop form submission
+      }
+    }
+  
     try {
       await fetch('http://localhost:5000/api/recycler', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
+  
       if (!manualMode) {
         setNewBatches((prevBatches) =>
           prevBatches.filter((batch) => batch.batch_id !== formData.batch_id)
         );
       }
-
+  
       fetchRecyclerEntries();
       handleCloseForm();
       alert('Batch processed successfully!');
@@ -113,8 +137,6 @@ const RecyclerDashboard = () => {
       alert('Failed to process batch.');
     }
   };
-
-  // Calculate percentages
   const calculatePercentages = () => {
     let totalReceived = 0;
     let totalRecycled = 0;
@@ -134,7 +156,6 @@ const RecyclerDashboard = () => {
 
   const { recycledPercentage, nonRecyclablePercentage } = calculatePercentages();
 
-  // Prepare data for Pie Chart
   const pieData = [
     { name: 'Recycled', value: parseFloat(recycledPercentage) },
     { name: 'Non-Recyclable', value: parseFloat(nonRecyclablePercentage) },
@@ -147,14 +168,21 @@ const RecyclerDashboard = () => {
       </Typography>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant="h6" fontWeight="bold">
-          Notifications
-        </Typography>
-        <IconButton onClick={() => handleOpenForm()}>
-          <Badge badgeContent={newBatches.length} color="error">
-            <NotificationsIcon fontSize="large" />
-          </Badge>
-        </IconButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography variant="h6" fontWeight="bold">
+            Notifications
+          </Typography>
+          <IconButton>
+            <Badge badgeContent={newBatches.length} color="error">
+              <NotificationsIcon fontSize="large" />
+            </Badge>
+          </IconButton>
+        </Box>
+
+        {/* Manual Process Button */}
+        <Button variant="contained" color="secondary" onClick={handleManualProcess}>
+          Manual Process
+        </Button>
       </Box>
 
       {/* New Municipality Batches */}
@@ -181,7 +209,7 @@ const RecyclerDashboard = () => {
                   <TableCell>{batch.location}</TableCell>
                   <TableCell>{batch.waste}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" onClick={() => handleOpenForm(batch.batch_id)}>
+                    <Button variant="contained" color="primary" onClick={() => handleBatchProcess(batch.batch_id)}>
                       Process
                     </Button>
                   </TableCell>
@@ -194,14 +222,13 @@ const RecyclerDashboard = () => {
 
       {/* Flexbox layout for Summary and Processed Table */}
       <Box sx={{ display: 'flex', gap: 4 }}>
-        {/* Left side - Percentages Summary with Pie Chart */}
         <Card sx={{ flex: 1, p: 2 }}>
           <CardContent>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
               Recycling Summary
             </Typography>
             <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>Recycled Percentage:</strong> {recycledPercentage}% 
+              <strong>Recycled Percentage:</strong> {recycledPercentage}%
             </Typography>
             <Typography variant="body1" sx={{ mb: 1 }}>
               <strong>Non-Recyclable Percentage:</strong> {nonRecyclablePercentage}%
@@ -210,7 +237,6 @@ const RecyclerDashboard = () => {
               Based on total received weight.
             </Typography>
 
-            {/* Pie Chart */}
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
@@ -234,7 +260,6 @@ const RecyclerDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Right side - Processed Batches Table */}
         <Paper elevation={3} sx={{ flex: 3, p: 2 }}>
           <Typography variant="h5" gutterBottom fontWeight="bold">
             Processed Batches

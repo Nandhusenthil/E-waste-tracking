@@ -67,20 +67,7 @@ const MunicipalityDashboard = () => {
     }
   };
 
-  const handleManualProcess = () => {
-    const newBatchId = `batch_${batchCounter}`;
 
-    const newManualEntry = {
-      name: 'Manual Batch',
-      location: 'Manual Location',
-      waste: '0',
-      batch_id: newBatchId,
-      createdAt: new Date().toISOString(),
-    };
-
-    setEntries((prev) => [...prev, newManualEntry]);
-    setBatchCounter((prev) => prev + 1); // Increment counter after manual batch
-  };
 
   useEffect(() => {
     fetchData();
@@ -122,9 +109,6 @@ const MunicipalityDashboard = () => {
             Submit Municipality Batch
           </Button>
 
-          <Button variant="outlined" color="secondary" onClick={handleManualProcess}>
-            Manually Process Batch
-          </Button>
         </Stack>
       </form>
 

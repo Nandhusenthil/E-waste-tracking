@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     const entry = new Municipality({ name, location, waste, batch_id });
     await entry.save();
 
-    console.log("✅ Saved to DB:", entry);
+    console.log("Saved to DB:", entry);
 
     res.status(201).json(entry);
   } catch (error) {
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
     const data = await Municipality.find().sort({ batch_id: 1 });
     res.json(data);
   } catch (error) {
-    console.error("❌ Error fetching data:", error);
+    console.error(" Error fetching data:", error);
     res.status(500).json({ error: error.message });
   }
 });

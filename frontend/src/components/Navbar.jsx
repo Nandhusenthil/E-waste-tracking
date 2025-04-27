@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Menu, MenuItem } from "@mui/material";
 import { Link } from "react-scroll";
+import { Link as RouterLink } from "react-router-dom";
+
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 const partners = [
@@ -76,11 +78,14 @@ const Navbar = () => {
         </Menu>
 
         {/* Login / Signup Button */}
-        <Button sx={{ color: "black" }}>
-          <Link to="login-section" smooth={true} duration={500} offset={-64} style={{ textDecoration: "none", color: "black" }}>
+        <Button 
+                sx={{ color: "black" }} 
+            component={RouterLink} 
+            to="/login"
+             >
             LOGIN / SIGNUP
-          </Link>
-        </Button>
+           </Button>
+
       </Toolbar>
     </AppBar>
   );

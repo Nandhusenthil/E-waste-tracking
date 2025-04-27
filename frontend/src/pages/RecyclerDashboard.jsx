@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
 import {
   Container,
   Typography,
@@ -104,31 +103,29 @@ const RecyclerDashboard = () => {
   };
 
   const handleFormSubmit = async () => {
-   
-  
     if (manualMode) {
       const batchIdExists = entries.some(entry => entry.batch_id === formData.batch_id);
       const batchExistsInMunicipality = newBatches.some(batch => batch.batch_id === formData.batch_id);
-  
+
       if (!batchIdExists || !batchExistsInMunicipality) {
-        alert('Enter a unique Batch Id any Try Again');
-        return; // Stop form submission
+        alert('Enter a unique Batch ID and Try Again');
+        return;
       }
     }
-  
+
     try {
       await fetch('http://localhost:5000/api/recycler', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-  
+
       if (!manualMode) {
         setNewBatches((prevBatches) =>
           prevBatches.filter((batch) => batch.batch_id !== formData.batch_id)
         );
       }
-  
+
       fetchRecyclerEntries();
       handleCloseForm();
       alert('Batch processed successfully!');
@@ -137,6 +134,7 @@ const RecyclerDashboard = () => {
       alert('Failed to process batch.');
     }
   };
+
   const calculatePercentages = () => {
     let totalReceived = 0;
     let totalRecycled = 0;
@@ -179,13 +177,11 @@ const RecyclerDashboard = () => {
           </IconButton>
         </Box>
 
-        {/* Manual Process Button */}
         <Button variant="contained" color="secondary" onClick={handleManualProcess}>
           Manual Process
         </Button>
       </Box>
 
-      {/* New Municipality Batches */}
       {newBatches.length > 0 && (
         <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -220,7 +216,6 @@ const RecyclerDashboard = () => {
         </Paper>
       )}
 
-      {/* Flexbox layout for Summary and Processed Table */}
       <Box sx={{ display: 'flex', gap: 4 }}>
         <Card sx={{ flex: 1, p: 2 }}>
           <CardContent>
@@ -295,11 +290,17 @@ const RecyclerDashboard = () => {
         </Paper>
       </Box>
 
-      {/* Modal for Form */}
       <Modal open={openForm} onClose={handleCloseForm}>
         <Box sx={{
-          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          width: 500, bgcolor: 'background.paper', boxShadow: 24, p: 4, borderRadius: 3
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 500,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 3,
         }}>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
             {manualMode ? 'Process Manual Batch' : 'Process Batch'}

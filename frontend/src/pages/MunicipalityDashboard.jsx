@@ -18,20 +18,16 @@ const MunicipalityDashboard = () => {
   const [location, setLocation] = useState('');
   const [waste, setWaste] = useState('');
   const [entries, setEntries] = useState([]);
-  const [batchCounter, setBatchCounter] = useState(1); // 🔥 Global counter for unique Batch IDs
+  const [batchCounter, setBatchCounter] = useState(1);
 
   const fetchData = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/municipality');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       console.log("🌐 Fetched entries:", data);
-
       setEntries(data);
 
-      // ⚡ Update counter based on maximum batch id fetched
       const maxBatchId = data.reduce((max, entry) => {
         const idNum = parseInt(entry.batch_id?.split('_')[1]) || 0;
         return idNum > max ? idNum : max;
@@ -56,9 +52,7 @@ const MunicipalityDashboard = () => {
       const newEntry = await response.json();
 
       setEntries((prev) => [...prev, newEntry]);
-      setBatchCounter((prev) => prev + 1); // Increment counter after new entry
-
-      // Clear form inputs
+      setBatchCounter((prev) => prev + 1);
       setName('');
       setLocation('');
       setWaste('');
@@ -67,77 +61,100 @@ const MunicipalityDashboard = () => {
     }
   };
 
-
-
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
-    <Container maxWidth="md" sx={{ mt: 5 }}>
-      <Typography variant="h4" gutterBottom fontWeight="bold">
+    <Container maxWidth="md" sx={{ mt: 5, mb: 5, bgcolor: '#f5f7fa', p: 4, borderRadius: 3 }}>
+      <Typography variant="h4" gutterBottom fontWeight="bold" textAlign="center" color="primary">
         Municipality Dashboard
       </Typography>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}
-      >
-        <Stack direction="row" spacing={2}>
-          <TextField
-            label="Municipality Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            fullWidth
-          />
-          <TextField
-            label="Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            fullWidth
-          />
-          <TextField
-            label="Waste Collected (kg)"
-            value={waste}
-            onChange={(e) => setWaste(e.target.value)}
-            fullWidth
-          />
-        </Stack>
+      <Paper elevation={4} sx={{ p: 3, mb: 4, borderRadius: 3 }}>
+        <Typography variant="h6" gutterBottom fontWeight="bold">
+          Add New Municipality Batch
+        </Typography>
 
-        <Stack direction="row" spacing={2}>
-          <Button type="submit" variant="contained" color="primary">
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+        >
+          <Stack direction="row" spacing={2}>
+            <TextField
+              label="Municipality Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              fullWidth
+              variant="outlined"
+            />
+            <TextField
+              label="Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              fullWidth
+              variant="outlined"
+            />
+            <TextField
+              label="Waste Collected (kg)"
+              value={waste}
+              onChange={(e) => setWaste(e.target.value)}
+              fullWidth
+              variant="outlined"
+              type="number"
+            />
+          </Stack>
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            sx={{
+              mt: 2,
+              alignSelf: 'flex-start',
+              borderRadius: 2,
+              fontWeight: 'bold',
+              textTransform: 'none',
+              px: 4,
+              py: 1,
+            }}
+          >
             Submit Municipality Batch
           </Button>
+        </form>
+      </Paper>
 
-        </Stack>
-      </form>
-
-      <Typography variant="h5" gutterBottom fontWeight="bold">
+      <Typography variant="h5" gutterBottom fontWeight="bold" textAlign="center" color="primary">
         Collected Data
       </Typography>
 
-      <Paper elevation={3}>
+      <Paper elevation={4} sx={{ borderRadius: 3 }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell><strong>Batch ID</strong></TableCell>
-              <TableCell><strong>Name</strong></TableCell>
-              <TableCell><strong>Location</strong></TableCell>
-              <TableCell><strong>Waste (kg)</strong></TableCell>
-              <TableCell><strong>Date</strong></TableCell>
+            <TableRow sx={{ bgcolor: '#1976d2' }}>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Batch ID</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Name</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Location</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Waste (kg)</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {entries.map((entry, index) => (
-              <TableRow key={index}>
+              <TableRow
+                key={index}
+                sx={{
+                  bgcolor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                  '&:hover': { bgcolor: '#e3f2fd' },
+                  transition: 'all 0.3s ease',
+                }}
+              >
                 <TableCell>{entry.batch_id ?? 'N/A'}</TableCell>
                 <TableCell>{entry.name}</TableCell>
                 <TableCell>{entry.location}</TableCell>
                 <TableCell>{entry.waste}</TableCell>
                 <TableCell>
-                  {entry.createdAt
-                    ? new Date(entry.createdAt).toLocaleString()
-                    : 'N/A'}
+                  {entry.createdAt ? new Date(entry.createdAt).toLocaleString() : 'N/A'}
                 </TableCell>
               </TableRow>
             ))}

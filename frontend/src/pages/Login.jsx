@@ -23,7 +23,7 @@ const Login = () => {
 
         if (role === 'municipal') navigate('/municipalitydashboard');
         else if (role === 'recycler') navigate('/recyclerdashboard');
-        else if (role === 'central-government') navigate('/landingpage');
+        else if (role === 'central-government') navigate('/dashboard');
       } else {
         await axios.post('http://localhost:5000/api/auth/signup', { email, password, role });
         alert('Signup successful! Please login now.');

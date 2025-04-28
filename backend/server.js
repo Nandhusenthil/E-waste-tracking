@@ -20,12 +20,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/municipality', municipalityRoutes);
 app.use('/api/recycler',recyclerRoutes);
-
-// API Routes
-app.use('/api/municipality', municipalityRoutes);
-app.use('/api/recycler', recyclerRoutes);
 app.use('/api/dashboard', dashboardRoutes); // 👈 added
 
 app.listen(PORT, () => {
   console.log(` Server running at http://localhost:${PORT}`);
 });
+  

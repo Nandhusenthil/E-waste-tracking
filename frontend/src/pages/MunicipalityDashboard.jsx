@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Box,
   Container,
   Typography,
   TextField,
@@ -66,102 +67,157 @@ const MunicipalityDashboard = () => {
   }, []);
 
   return (
-    <Container maxWidth="md" sx={{ mt: 5, mb: 5, bgcolor: '#f5f7fa', p: 4, borderRadius: 3 }}>
-      <Typography variant="h4" gutterBottom fontWeight="bold" textAlign="center" color="primary">
-        Municipality Dashboard
-      </Typography>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: 'linear-gradient(to right, #dbeafe, #bae6fd)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        alignSelf: 'center',
+        px: { xs: 2, md: 25}, 
+        width: '100%',
+      }}
+    >
+      <Box
+        sx={{
+          width: '100%',
+          px: { xs: 2, md: 10 }, 
 
-      <Paper elevation={4} sx={{ p: 3, mb: 4, borderRadius: 3 }}>
-        <Typography variant="h6" gutterBottom fontWeight="bold">
-          Add New Municipality Batch
+        }}
+      >
+        <Typography
+          variant="h3"
+          fontWeight="bold"
+          mb={5}
+          textAlign="center"
+          color="primary"
+          padding={3}
+          sx={{ textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}
+        >
+          Municipality Dashboard
         </Typography>
 
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+        {/* Form Section */}
+        <Paper
+          elevation={4}
+          sx={{
+            p: 4,
+            mb: 5,
+            bgcolor: '#ffffffcc',
+            borderRadius: 4,
+            boxShadow: '0px 8px 24px rgba(0,0,0,0.1)',
+            backdropFilter: 'blur(6px)',
+          }}
         >
-          <Stack direction="row" spacing={2}>
-            <TextField
-              label="Municipality Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              fullWidth
-              variant="outlined"
-            />
-            <TextField
-              label="Location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              fullWidth
-              variant="outlined"
-            />
-            <TextField
-              label="Waste Collected (kg)"
-              value={waste}
-              onChange={(e) => setWaste(e.target.value)}
-              fullWidth
-              variant="outlined"
-              type="number"
-            />
-          </Stack>
+          <Typography variant="h5" fontWeight="bold" mb={3} color="secondary" textAlign="center">
+            Add New Municipality Batch
+          </Typography>
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="secondary"
-            sx={{
-              mt: 2,
-              alignSelf: 'flex-start',
-              borderRadius: 2,
-              fontWeight: 'bold',
-              textTransform: 'none',
-              px: 4,
-              py: 1,
-            }}
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
           >
-            Submit Municipality Batch
-          </Button>
-        </form>
-      </Paper>
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+              <TextField
+                label="Municipality Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+                variant="outlined"
+              />
+              <TextField
+                label="Location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                fullWidth
+                variant="outlined"
+              />
+              <TextField
+                label="Waste Collected (kg)"
+                value={waste}
+                onChange={(e) => setWaste(e.target.value)}
+                fullWidth
+                variant="outlined"
+                type="number"
+              />
+            </Stack>
 
-      <Typography variant="h5" gutterBottom fontWeight="bold" textAlign="center" color="primary">
-        Collected Data
-      </Typography>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{
+                mt: 2,
+                alignSelf: 'center',
+                borderRadius: 2,
+                fontWeight: 'bold',
+                textTransform: 'none',
+                px: 5,
+                py: 1.5,
+              }}
+            >
+              Submit Batch
+            </Button>
+          </form>
+        </Paper>
 
-      <Paper elevation={4} sx={{ borderRadius: 3 }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ bgcolor: '#1976d2' }}>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Batch ID</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Name</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Location</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Waste (kg)</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {entries.map((entry, index) => (
-              <TableRow
-                key={index}
-                sx={{
-                  bgcolor: index % 2 === 0 ? '#f9f9f9' : 'white',
-                  '&:hover': { bgcolor: '#e3f2fd' },
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                <TableCell>{entry.batch_id ?? 'N/A'}</TableCell>
-                <TableCell>{entry.name}</TableCell>
-                <TableCell>{entry.location}</TableCell>
-                <TableCell>{entry.waste}</TableCell>
-                <TableCell>
-                  {entry.createdAt ? new Date(entry.createdAt).toLocaleString() : 'N/A'}
-                </TableCell>
+        {/* Table Section */}
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          mb={2}
+          textAlign="center"
+          color="primary"
+        >
+          Collected Data
+        </Typography>
+
+        <Paper
+          elevation={4}
+          sx={{
+            overflowX: 'auto',
+            borderRadius: 4,
+            p: 2,
+            bgcolor: '#ffffffcc',
+            boxShadow: '0px 8px 24px rgba(0,0,0,0.1)',
+            backdropFilter: 'blur(6px)',
+          }}
+        >
+          <Table>
+            <TableHead>
+              <TableRow sx={{ bgcolor: '#1976d2' }}>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Batch ID</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Name</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Location</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Waste (kg)</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Date</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
-    </Container>
+            </TableHead>
+            <TableBody>
+              {entries.map((entry, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    bgcolor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                    '&:hover': { bgcolor: '#e3f2fd' },
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  <TableCell>{entry.batch_id ?? 'N/A'}</TableCell>
+                  <TableCell>{entry.name}</TableCell>
+                  <TableCell>{entry.location}</TableCell>
+                  <TableCell>{entry.waste}</TableCell>
+                  <TableCell>
+                    {entry.createdAt ? new Date(entry.createdAt).toLocaleString() : 'N/A'}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </Box>
+    </Box>
   );
 };
 

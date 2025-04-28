@@ -160,12 +160,14 @@ const RecyclerDashboard = () => {
   ];
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 5 }}>
-      <Typography variant="h4" gutterBottom fontWeight="bold">
+    <Container maxWidth="xl" sx={{ mt: 3 }}>
+      <Typography variant="h4" gutterBottom fontWeight="bold" color='primary' align="center">
         Recycler Dashboard
       </Typography>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4,
+        paddingLeft: '20px',
+       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="h6" fontWeight="bold">
             Notifications
@@ -183,7 +185,7 @@ const RecyclerDashboard = () => {
       </Box>
 
       {newBatches.length > 0 && (
-        <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
+        <Paper elevation={3} sx={{ p: 2, mb: 4, paddingLeft: '20px', align: 'center' }}>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
             New Batches from Municipality
           </Typography>
@@ -216,8 +218,8 @@ const RecyclerDashboard = () => {
         </Paper>
       )}
 
-      <Box sx={{ display: 'flex', gap: 4 }}>
-        <Card sx={{ flex: 1, p: 2 }}>
+      <Box sx={{ display: 'flex', gap: 8 }} paddingLeft={5} paddingBottom={10}> 
+        <Card sx={{ flex: 1, p: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
               Recycling Summary
@@ -255,7 +257,7 @@ const RecyclerDashboard = () => {
           </CardContent>
         </Card>
 
-        <Paper elevation={3} sx={{ flex: 3, p: 2 }}>
+        <Paper elevation={3} sx={{ flex: 3, p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography variant="h5" gutterBottom fontWeight="bold">
             Processed Batches
           </Typography>

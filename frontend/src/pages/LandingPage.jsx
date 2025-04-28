@@ -7,19 +7,18 @@ import { Box } from "@mui/material";
 
 const LandingPage = () => {
   return (
-    <Box
-      sx={{
-        paddingTop: "64px",  // Adjusting for fixed navbar
-        width: "100vw",
-        minHeight: "100vh",
-        overflowX: "hidden",
-      }}
-    >
+    <>
       <Navbar />
-      <Box id="home-section"><Home /></Box>
-      <Box id="about-section"><About /></Box>
+      <Box sx={{ width: "100%", overflowX: "hidden" }}>
+        <Box id="home-section">
+          <Home />
+        </Box>
+        <Box id="about-section">
+          <About />
+        </Box>
+      </Box>
       <Footer />
-    </Box>
+    </>
   );
 };
 

@@ -1,34 +1,30 @@
+// src/sections/Home.jsx
 import { Box, Typography } from "@mui/material";
 
 const Home = () => {
   return (
     <Box
-      id="home"
       sx={{
-        width: "100%", 
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start", // Align content to start
-        alignItems: "center",
-        textAlign: "center",
-        color: "white",
-        backgroundImage: "url('/assets/HomeBg.jpg')",
+        backgroundImage: "url(/assets/HomeBg.jpg)", // no quotes '' needed inside url()
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        overflowX: "hidden",
-        boxSizing: "border-box",
-        px: 3,
-        pt: 15, // Push content down slightly (adjust this value)
+        width: "100vw",
+        minHeight: "100vh", // Full screen height
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#fff", // Better visibility if image is dark
+        textAlign: "center",
+        padding: "20px",
       }}
     >
-      <Typography variant="h3" fontWeight="bold" sx={{ mb: 1 }}>
-        E-Waste Tracking Platform
+      <Typography variant="h3" gutterBottom>
+        How E-Waste is Tracked
       </Typography>
-      <Typography variant="h6" sx={{ mt: 1, maxWidth: "800px" }}>
-        A smart platform for tracking and managing electronic waste from
-        municipality centers to recyclers and government authorities.
+      <Typography variant="body1" sx={{ maxWidth: "600px", fontSize: "18px" }}>
+        Our platform efficiently tracks e-waste movement from municipality centers to recyclers and government authorities.
       </Typography>
     </Box>
   );
